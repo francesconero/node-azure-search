@@ -222,7 +222,17 @@ module.exports = function(options){
 			get(['indexes', indexName, 'docs', query], null, function(err, results){
 				if (err) return cb(err);
 				if (results && results.error) return cb(results.error);
-				cb(null, results.value);						
+
+				var count = results['@odata.count'];
+				if(count !== null && count !== (void 0)) {
+					var out = {
+						value: results.value,
+						count: count
+					};
+					return cb(null, out);
+				} else {
+					return cb(null, results.value);
+				}
 			});
 		},
 
